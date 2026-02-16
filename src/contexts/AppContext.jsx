@@ -50,7 +50,7 @@ export function AppProvider({ children }) {
   }, []);
 
   const login = async (username, password) => {
-    dispatch({ type: 'SET_LOADING', true });
+    dispatch({ type: 'SET_LOADING', payload: true });
     try {
       const user = await authManager.login(username, password);
       dispatch({ type: 'LOGIN_SUCCESS', payload: user });
