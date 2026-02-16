@@ -1,37 +1,35 @@
-// Main layout component
 import React from 'react';
+import { useApp } from '../../contexts/AppContext';
 import Sidebar from './Sidebar';
 import Header from './Header';
-import { useApp } from '../../contexts/AppContext';
+import LoginScreen from '../Auth/LoginScreen';
 
-export default function MainLayout({ children }) {
-  const { state } = useApp();
-  const { isAuthenticated, company } = state;
+const MainLayout = ({ children }) => {
+  const { isAuthenticated, loading, user } = useApp();
 
-  // For login and setup screens, render without layout
-  if (!isAuthenticated || !company) {
-    return <>{children}</>;
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
   }
 
-  // For authenticated users with company setup, render with full layout
+  if (!isAuthenticated) {
+    return <LoginScreen />;
+  }
+
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
+    <div className="flex h-screen bg-slate-50 overflow-hidden">
       <Sidebar />
-      
-      {/* Main content area */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <Header />
-        
-        {/* Main content */}
+        <Header user={user} />
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
-          <div className="max-w-7xl mx-auto">
-            {children}
-          </div>
+          {children}
         </main>
       </div>
     </div>
   );
-}
+};
 
+export default MainLayout;
