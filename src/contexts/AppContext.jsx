@@ -43,7 +43,7 @@ export function AppProvider({ children }) {
       } catch (err) {
         console.error('Init error:', err);
       } finally {
-        dispatch({ type: 'SET_LOADING', false });
+        dispatch({ type: 'SET_LOADING', payload: false });
       }
     };
     init();
