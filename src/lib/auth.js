@@ -273,5 +273,6 @@ class AuthManager {
 
 // Export singleton instance
 const auth = new AuthManager();
+export const authManager = auth;
 export default auth;
 
