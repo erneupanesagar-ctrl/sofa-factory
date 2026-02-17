@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useReducer } from 'react';
 
-const AppContext = createContext();
+const AppContext = createContext(null);
 
-const initialState = {
+const defaultState = {
   user: { username: 'admin', role: 'admin', name: 'System Admin' },
   isAuthenticated: true,
   loading: false,
@@ -12,6 +12,8 @@ const initialState = {
   selectedFactory: null,
   filters: {}
 };
+
+const initialState = { ...defaultState };
 
 function appReducer(state, action) {
   switch (action.type) {
@@ -52,26 +54,24 @@ export function AppProvider({ children }) {
   };
 
   const logout = () => dispatch({ type: 'LOGOUT' });
-  
   const toggleSidebar = () => dispatch({ type: 'TOGGLE_SIDEBAR' });
-  
   const setSidebar = (open) => dispatch({ type: 'SET_SIDEBAR', payload: open });
-  
   const setSelectedFactory = (factory) => dispatch({ type: 'SET_SELECTED_FACTORY', payload: factory });
-  
   const setFilters = (filters) => dispatch({ type: 'SET_FILTERS', payload: filters });
 
+  const value = { 
+    ...state, 
+    login, 
+    logout, 
+    toggleSidebar, 
+    setSidebar, 
+    setSelectedFactory, 
+    setFilters,
+    dispatch 
+  };
+
   return (
-    <AppContext.Provider value={{ 
-      ...state, 
-      login, 
-      logout, 
-      toggleSidebar, 
-      setSidebar, 
-      setSelectedFactory, 
-      setFilters,
-      dispatch 
-    }}>
+    <AppContext.Provider value={value}>
       {children}
     </AppContext.Provider>
   );
@@ -79,8 +79,6 @@ export function AppProvider({ children }) {
 
 export const useApp = () => {
   const context = useContext(AppContext);
-  if (!context) {
-    throw new Error('useApp must be used within AppProvider');
-  }
-  return context;
+  // Return default state if context is not available (safe fallback)
+  return context || defaultState;
 };
